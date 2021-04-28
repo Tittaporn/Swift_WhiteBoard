@@ -2,6 +2,18 @@ import UIKit
 
 // 04/26/2021 Audio
 
+/* Write a function to find a position of 2DArray of the number input
+
+  input array : [[1,2,4],[56,77,89],[5,6,99,65]]
+
+  input x : 99
+  output : 2,2
+
+  input x : 89
+  output : 1,2
+ */
+
+
 var input2DArray = [[1,2,4],[56,77,89],[5,6,99,65]]
 
 func findIndicesOf(x: Int, array: [[Int]]) -> [Int] {
@@ -17,14 +29,22 @@ func findIndicesOf(x: Int, array: [[Int]]) -> [Int] {
    return returnArray
 }
 
-findIndicesOf(x: 99, array: input2DArray)
+findIndicesOf(x: 89, array: input2DArray)
 // Time Complexity: O(n²) — Quadratic Time
 // Space Complexity: O(n) – linear complexity ???
 
 //===============================================================================================
 
+/*
+ Write a function that return number that odd occurrency in array
+ input : [6,6,6,6,4,3,3,4,4]
+ output : 4
+ input : [6,4,3,3,4]
+ output : 6
+ */
+
+
 var arrayInput = [6,6,6,6,4,3,3,4,4]
-//output : 6
 
 func findOddOccurrency(arrayInput: [Int]) -> Int? {
     var dict: [Int:Int] = [:]
