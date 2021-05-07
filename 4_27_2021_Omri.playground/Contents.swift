@@ -2,7 +2,7 @@ import UIKit
 
 //4/27/2021
 
-/* By Omeri iOS38 White Board
+/* By Omri iOS38 White Board
  write a function that produces this result -- Ex:
  accum("abcd") -> "A-Bb-Ccc-Dddd"
  accum("RqaEzty") -> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"

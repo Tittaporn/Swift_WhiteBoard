@@ -33,6 +33,27 @@ findIndicesOf(x: 89, array: input2DArray)
 // Time Complexity: O(n²) — Quadratic Time
 // Space Complexity: O(n) – linear complexity ???
 
+// by Stan Phillip
+let array: [[Int]] = [[1,2,4],[56,77,89],[5,6,99,65]]
+let num = 99
+
+func findPosition(of num: Int, in array: [[Int]]) -> [Int] {
+    var position: [Int] = []
+    var i = 0
+    
+    for arr in array {
+        if arr.contains(num) {
+            position.append(i)
+            position.append(arr.firstIndex(of: num) ?? -1)
+        }
+        i += 1
+    }
+    
+    return position
+}
+
+print(findPosition(of: num, in: array))
+
 //===============================================================================================
 
 /*
@@ -64,6 +85,14 @@ func findOddOccurrency(arrayInput: [Int]) -> Int? {
     }
     return numberOfOddOccurrency
 }
+
+//by Stan Philip
+func oddCount(array: [Int]) -> Int {
+    return array.reduce(0, ^)
+}
+
+oddCount(array: arrayInput)
+
 
 // Time Complexity:  Linear == O(n)
 // Space Complexity: ??
