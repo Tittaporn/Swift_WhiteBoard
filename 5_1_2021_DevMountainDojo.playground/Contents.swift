@@ -1063,3 +1063,62 @@ func findNextAboveAndBelow(number: Int) -> (lower: Int?, upper: Int?) {
 }
 
 findNextAboveAndBelow(number: 100)
+
+//Trevor.Walker — 05/08/2021 at 11:54 AM
+func nextHighestAndLowest(_ x: Int) -> (h: Int?, l: Int?) {
+    // Holders
+    var l: Int?
+    // 0 is a special number
+    if x == 0 {
+        return (h: nil, l: nil)
+    }
+    //If the number is a power of 2 then the next highest and lowest are simply the next and previous powers of 2
+    if (x > 0) && (x & (x - 1) == 0) {
+        //If x == 1 then there is no lower number
+        if x == 1 {
+            return (h: x * 2, l: nil)
+        }
+        return (h: x * 2, l: x / 2)
+    }
+    // Mark: Detect Lowest
+    // if the number is one less than a root of two then no numbers below it will share the same amount of 1's
+    if !((x - 1 > 0) && (x - 1 & (x - 1 - 1) == 0)) {
+        for i in stride(from: x - 1, to: 0, by: -1){
+            if i.nonzeroBitCount == x.nonzeroBitCount {
+                l = i
+                break
+            }
+        }
+    }
+    // Mark: Detect highest
+    var i = x + 1
+    while true {
+        if i.nonzeroBitCount == x.nonzeroBitCount {
+            return (h: i, l: l)
+        }
+        i += 1
+    }
+}
+
+//=========================================================================================================================================
+/*
+ MaxPoff — 5/7/2021 at 5:45 PM
+ Write a function that returns the square root of a positive integer, rounded down to the nearest integer, WITHOUT using sqrt().
+ */
+
+//Justin Webster — 5/7/2021 at 7:07 PM
+func findSquareOfInt(int: Int) -> Int {
+    var floorSqrt: Int = 0
+    if int > 0 {
+        for i in 1...int {
+            if i * i > int {
+                floorSqrt = i - 1
+                break
+            }
+        }
+    } else {
+        return 5318008
+    }
+    return floorSqrt
+}
+
