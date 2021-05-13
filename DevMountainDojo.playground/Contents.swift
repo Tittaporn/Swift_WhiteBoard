@@ -1122,3 +1122,94 @@ func findSquareOfInt(int: Int) -> Int {
     return floorSqrt
 }
 
+//MaxPoff — 05/11/2021
+func squareRoot(input: Int) -> Int {
+    return Int(floor(pow(Double(input), 0.5)))
+}
+
+//=========================================================================================================================================
+/*
+ MaxPoff — 5/11/2021
+ Write an extension for collections of integers, that returns the number of times a specific digit appears in any of its numbers.t of a positive integer, rounded down to the nearest integer, WITHOUT using sqrt().
+ */
+
+//Gavin "Grandmaster" Craft — 05/11/2021
+//here is the non recursive
+func giveInstancesNonRecursive(number: Int, findNum: Int)->Int{
+    let digits = String(number).compactMap { Int(String($0)) }
+    var numberUses: Int = 0
+    for digit in digits{
+        if digit == findNum{
+            numberUses += 1
+        }
+    }
+    return numberUses
+}
+
+//and here is recursive
+func giveInstances(number: Int, findNum: Int, remainingMap: [Int] = [-1], foundNumber:Int = 0) -> Int{
+    if remainingMap == []{
+        //we done so return
+        return foundNumber
+    }
+    var digits = (remainingMap != [-1]) ? remainingMap : String(number).compactMap { Int(String($0)) }
+    var instances = foundNumber
+    if digits[0] == findNum{
+        instances += 1
+    }
+    digits.remove(at: 0)
+    return giveInstances(number: number, findNum: findNum, remainingMap: digits, foundNumber: instances)
+}
+
+//Trevor.Walker — 5/12/2021 at 3:03 PM
+extension Numeric {
+    func occurencesOf(_ x: Int) -> Int {
+        "\(self)".filter({ "\($0)" == "\(x)" }).count
+    }
+}
+
+//MaxPoff — 5/12/2021  at 3:28 PM
+extension Collection where Iterator.Element == Int {
+    func occurences2(count: Character) -> Int {
+        return self.reduce(0) {$0 + String($1).filter { (char: Character) -> Bool in char == count }.count
+        }
+    }
+}
+
+//=========================================================================================================================================
+/*
+ MaxPoff — 5/12/2021
+ Write an extension for all collections that returns the N smallest elements as an array, sorted smallest first, where N is an integer parameter.
+ */
+
+//RyanG — 5/12/2021 at 4:13 PM
+extension Int {
+    var digits: [Character] {
+        return [Character](String(self))
+    }
+}
+
+extension Collection where Iterator.Element == Int {
+    func findOccurences(of int: Int) -> Int {
+        guard int.digits.count <= 1 else {
+            assertionFailure("Pass only an integer with a single digit value")
+            return 0
+        }
+        let characters = self.map(\.digits).reduce([], +)
+        return characters.filter({ Int(String($0)) == int }).count
+    }
+}
+
+//Gavin "Grandmaster" Craft — 5/12/2021 at 5:53 PM
+extension Collection where Iterator.Element == Int{
+    func findNSmallestNumbers(n:Int) -> [Int]{
+        let sorted = self.sorted()
+        var valueToReturn: [Int] = []
+        var index = 0
+        while index < n{
+            valueToReturn.append(sorted[index])
+            index += 1
+        }
+        return valueToReturn
+    }
+}
