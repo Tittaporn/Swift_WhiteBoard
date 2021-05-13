@@ -31,21 +31,21 @@ isRotatedString(inputString: "abc", rotatedString: "a")
 //Solution by By Paul Hudson
 
 /*
- This question appears in coding interviews far more than it deserves, because it’s a problem that seems tricky the first time you face it but is staring-you-in-the-face obvious once someone has told you the solution. I wonder how many times this question appears on interviews just so
- 
- the interviewer can feel smug about knowing the answer!
+ This question appears in coding interviews far more than it deserves, because it’s a problem that seems tricky the first time you face it but is staring-you-in-the-face obvious once someone has told you the solution. I wonder how many times this question appears on interviews just so the interviewer can feel smug about knowing the answer!
  Anyway, let’s talk about the solution. As I said in hint #3, if you write a string twice it must always encapsulate all possible rotations. So if your string was “abc” then you would double it to “abcabc”, which contains all possible rotations: “abc”, “cab”, and “bca”.
  So, an initial solution might look like this:
 
  */
-func challenge8(input: String, rotated: String) -> Bool { let combined = input + input
-return combined.contains(rotated)
+func challenge8(input: String, rotated: String) -> Bool {
+    let combined = input + input
+    return combined.contains(rotated)
 }
 
 /* However, that’s imperfect – the final example input and output was that “abc” should return false when given the test string “a”. Using the code above, the input string would be double to “abcabc”, which clearly contains the test string “a”. To fix this, we need to check not only that the test string exists in the doubled input, but also that both strings are the same size.
 So, the correct solution is this:
  */
-func challenge8a(input: String, rotated: String) -> Bool { guard input.count == rotated.count else { return false }
+func challenge8a(input: String, rotated: String) -> Bool {
+    guard input.count == rotated.count else { return false }
     let combined = input + input
     return combined.contains(rotated)
 }
