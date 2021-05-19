@@ -1214,3 +1214,29 @@ extension Collection where Iterator.Element == Int{
     }
 }
 
+//RyanG — 05/13/2021
+extension Collection where Iterator.Element: Comparable {
+    func minArray(_ count: Int) -> [Element] {
+        /// Easy checks to save on efficiency
+        guard count > 0, !self.isEmpty else { return [] }
+        guard count > 1 else { return [self.min()!] }
+        return Array(self.sorted().prefix(count))
+    }
+}
+
+["a", "B", "A", "c", "i"].minArray(3)
+
+//MaxPoff — 5/17/2021 at 11:04 AM
+extension Collection where Iterator.Element: Comparable {
+    func minArray(count: Int) -> [Iterator.Element] {
+        let sorted = self.sorted()
+        return Array(sorted.prefix(count))
+    }
+}
+
+
+//=========================================================================================================================================
+/*
+ MaxPoff — 5/17/2021
+ Write an extension for all collections that recreates the map() method.
+ */
