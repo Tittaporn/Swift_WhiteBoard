@@ -1240,3 +1240,25 @@ extension Collection where Iterator.Element: Comparable {
  MaxPoff — 5/17/2021
  Write an extension for all collections that recreates the map() method.
  */
+
+//Daniel Dickey — 5/18/2021 at 5:42 PM
+func newMap(array: Array<Any>, argument: (Any) -> (Any)) -> Array<Any> {
+    var newArray: Array<Any> = []
+    for element in array {
+        let adjustedElement = argument(element)
+        newArray.append(adjustedElement)
+    }
+    return newArray
+}
+
+//Tiffany Sakaguchi — Today at 7:03 PM
+extension Collection {
+    func myMap<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
+        guard self.count > 0 else { return [] }
+        var retVal = Array<T>()
+        try self.forEach { element in
+            retVal.append(try transform(element))
+        }
+        return retVal
+    }
+}
