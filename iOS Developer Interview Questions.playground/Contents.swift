@@ -196,3 +196,129 @@ Swift is a general-purpose programming language built using a modern approach to
  -------------------------------------------------------------------------------------------------------------------------------------------------------------
  */
 //===========================================================================================================================================================
+
+// MARK: - What are difference between UITableViewDelegate and UITableViewDatasource?
+/*
+ UITableViewDelegate
+- Serving as a table's delegate means you provide answers to requests about the layout of the table and about actions the user performs on the tableview. Layout methods include the tableview asking about the height of rows, headers, and footers, what the buttons should look like, etc. Action methods include the user selecting a row and beginning and ending the editing of a row.
+ 
+ UITableViewDatasource
+- Serving as a table's datasource means you provide data for the sections and rows of a table and you act on messages that change a table's data. The datasource is asked for the data for a cell when the table is drawn, is told that the user has asked to delete a row, and is told the new value of a row that the user has edited.
+
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ What is a UITableView delegate?
+ - The delegate of an UITableView object must adopt the UITableViewDelegate protocol. Optional methods of the protocol allow the delegate to manage selections, configure section headings and footers, help to delete and reorder cells, and perform other actions.
+ 
+ What is UITableViewDataSource?
+ - UITableViewDataSource is a protocol you implement to provide data for your UITableView . ... With UITableViewDataSource protocol you will be able to feed data into your table. Messages defined on this protocol will be called automatically by the UITableView class.
+
+ https://stackoverflow.com/questions/5714528/difference-between-uitableviewdelegate-and-uitableviewdatasource
+ */
+//===========================================================================================================================================================
+
+// MARK: - CoreData and Concurrency
+/*
+ *** Concurrency ***
+ - Concurrency is the ability to work with the data on more than one queue at the same time. If you choose to use concurrency with Core Data, you also need to consider the application environment. For the most part, AppKit and UIKit are not thread-safe. In macOS in particular, Cocoa bindings and controllers are not threadsafe—if you are using these technologies, multithreading may be complex.
+
+ *** Core Data, Multithreading, and the Main Thread  ***
+ - In Core Data, the managed object context can be used with two concurrency patterns, defined by NSMainQueueConcurrencyType and NSPrivateQueueConcurrencyType.
+ - NSMainQueueConcurrencyType is specifically for use with your application interface and can only be used on the main queue of an application.
+ - The NSPrivateQueueConcurrencyType configuration creates its own queue upon initialization and can be used only on that queue. Because the queue is private and internal to the NSManagedObjectContext instance, it can only be accessed through the performBlock: and the performBlockAndWait: methods.
+ - In both cases, the initialization of the NSManagedObjectContext instance is the same:
+ - The parameter being passed in as part of the initialization determines what type of NSManagedObjectContext is returned.
+ - When you are using an NSPersistentContainer, the viewContext property is configured as a NSMainQueueConcurrencyType context and the contexts associated with performBackgroundTask: and newBackgroundContext are configured as NSPrivateQueueConcurrencyType.
+
+ *** Using a Private Queue to Support Concurrency  ***
+ - In general, avoid doing data processing on the main queue that is not user-related. Data processing can be CPU-intensive, and if it is performed on the main queue, it can result in unresponsiveness in the user interface. If your application will be processing data, such as importing data into Core Data from JSON, create a private queue context and perform the import on the private context. The following example shows how to do this:
+ 
+ let jsonArray = … //JSON data to be imported into Core Data
+ let moc = … //Our primary context on the main queue
+ let privateMOC = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+ privateMOC.parentContext = moc
+ privateMOC.performBlock {
+     for jsonObject in jsonArray {
+         let mo = … //Managed object that matches the incoming JSON structure
+         //update MO with data from the dictionary
+     }
+     do {
+         try privateMOC.save()
+         moc.performBlockAndWait {
+             do {
+                 try moc.save()
+             } catch {
+                 fatalError("Failure to save context: \(error)")
+             }
+         }
+     } catch {
+         fatalError("Failure to save context: \(error)")
+     }
+ }
+ - In this example an array of data has been originally received as a JSON payload. You then create a new NSManagedObjectContext that is defined as a private queue. The new context is set as a child of the main queue context that runs the application. From there you call performBlock: and do the actual NSManagedObject creation inside of the block that is passed to performBlock:. After all of the data has been consumed and turned into NSManagedObject instances, you call save on the private context, which moves all of the changes into the main queue context without blocking the main queue.
+
+ This example can be further simplified when using an NSPersistentContainer:
+
+ let jsonArray = …
+ let container = self.persistentContainer
+ container.performBackgroundTask() { (context) in
+     for jsonObject in jsonArray {
+         let mo = EmployeeMO(context: context)
+         mo.populateFromJSON(jsonObject)
+     }
+     do {
+         try context.save()
+     } catch {
+         fatalError("Failure to save context: \(error)")
+     }
+ }
+ - Passing References Between Queues
+ - NSManagedObject instances are not intended to be passed between queues. Doing so can result in corruption of the data and termination of the application. When it is necessary to hand off a managed object reference from one queue to another, it must be done through NSManagedObjectID instances.
+- You retrieve the managed object ID of a managed object by calling the objectID method on the NSManagedObject instance.
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Is Core Data Thread Safe
+ - Is Core Data thread safe? Yes and no. Even though the framework originated in a time where computers with multicore processors were rare, Core Data is designed to operate in a multithreaded environment. In other words, it works fine on the latest iPhone and a Mac Pro with 28 cores.
+ - But you need to know the rules Core Data plays by. A managed object context is always bound to a dispatch queue, a queue for short. The same applies to managed objects. You should never pass a managed object from one queue to another. If you need to access a managed object from another queue, then pass the ID of the managed object, an instance of the NSManagedObjectID class. A NSManagedObjectID instance uniquely identifies a record in the persistent store. Working In a Multithreaded Environment covers Core Data and threading in more detail.
+ https://cocoacasts.com/is-core-data-thread-safe
+ https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreData/Concurrency.html
+ */
+//===========================================================================================================================================================
+
+// MARK: -  Thread Safe
+/*
+ Thread Unsafe - If any object is allowed to modify by more than one thread at the same time.
+ Thread Safe - If any object is not allowed to modify by more than one thread at the same time.
+
+ - Generally, immutable objects are thread-safe.
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Working In Thread Safe on iOS
+ - As you might know, the word “Thread safe” is referred to a computer science concept in the context of multi-thread programs. A code is called “Thread safe” if any shared data is accessed by only one thread at any given time. Notice these shared data are called critical sections in an operating system.
+ - The point is Swift collection types like Array and Dictionary are not thread-safe when declared mutable (With var keyword).
+ In this post, we will discuss some techniques to make our code thread safe in iOS.
+ 
+ Solutions
+ - The way to avoid race conditions is to synchronize data, or the critical sections. Synchronizing data usually means to “lock” it so that only one thread can access that part of the code at a time.
+ - Since Swift does not support built-in concurrency solutions, we’re going to use Grand Central Dispatch to implement thread safe instead.
+
+ Using serial queue
+ - By leveraging serial queues, we can prevent race conditions on a resource. As I introduced how a serial queue works in a previous post, Grand-Central-Dispatch-in-Swift, a serial queue allows just only one process run at a time so the array is safe from concurrent processes.
+ - Although we protect the array from being accessed by multiple threads, using serial queue is not the best solution. Reading the last value is not optimized because multiple read requests have to wait for each other as it is in a serial queue. Reads should be able to happen concurrently, as long as we do not make a write at the same time.
+
+ Using concurrent queue with the barrier flag
+ - The main idea of this solution is using a concurrent queue instead of a serial queue.
+ - Swift supports us to dispatch a block of code to a concurrent queue with a flag called barrier. The barrier flag ensures that the concurrent queue does not execute any other tasks while executing the barrier process. Once the barrier process done, then the queue allows running other tasks simultaneously by default implementation.
+ 
+ The trade off
+ - Working with multiple threads is a hard part of coding. Although we have to protect critical sections from multiple accesses, we should keep in mind that *”Keep the synchronized sections as small as possible because Locks create delays and add overhead. They are expensive”*. Clean code.
+ 
+ Some tips to deal with concurrency:
+ - Concurrency does not always improve performance. It sometimes incurs some overhead and bugs come from it are not usually repeatable.
+ - Limit the access of the data that is shared between more than two threads. Use copies of data if there is a chance.
+ Multithreaded code behaves differently in different environments: Run tests in every potential deployment environment.
+ 
+ Final thoughts
+ - Thread safe is one of the most important concepts in computer science, especially in a system which allows accessing data simultaneously. Understand how to make code thread safe, we can avoid serious errors occurring at runtime.
+ https://uynguyen.github.io/2018/06/05/Working-In-Thread-Safe-on-iOS/
+ https://stackoverflow.com/questions/41400185/what-does-it-mean-for-something-to-be-thread-safe-in-ios
+ */
+//===========================================================================================================================================================
+
