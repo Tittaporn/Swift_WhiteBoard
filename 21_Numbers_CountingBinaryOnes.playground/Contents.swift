@@ -47,7 +47,7 @@ func countBinaryOnes(number: Int) -> (Int?,Int?) {
     return (higest,lowest)
 }
 
-countBinaryOnes(number: 12)
+countBinaryOnes(number: 2)
 countBinaryOnes(number: 28)
 
 //==============================================================================================================================
