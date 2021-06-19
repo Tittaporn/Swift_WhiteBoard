@@ -1239,6 +1239,11 @@ extension Collection where Iterator.Element: Comparable {
 /*
  MaxPoff — 5/17/2021
  Write an extension for all collections that recreates the map() method.
+ 
+ Obviously without using any form of flatmap, compactMap, or map.
+
+ Hint:
+ It's much easier than you think, if you properly handle throwing and generics
  */
 
 //Daniel Dickey — 5/18/2021 at 5:42 PM
@@ -1251,7 +1256,7 @@ func newMap(array: Array<Any>, argument: (Any) -> (Any)) -> Array<Any> {
     return newArray
 }
 
-//Tiffany Sakaguchi — Today at 7:03 PM
+//Tiffany Sakaguchi — 05/19/2021 at 7:03 PM
 extension Collection {
     func myMap<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
         guard self.count > 0 else { return [] }
@@ -1261,4 +1266,106 @@ extension Collection {
         }
         return retVal
     }
+}
+
+//MaxPoff — 05/26/2021
+extension Collection {
+    func customMap<T>(_ transform: (Iterator.Element) throws -> T) rethrows -> [T] {
+        var returnValue = [T]()
+        for item in self {
+            returnValue.append(try transform(item))
+        }
+        return returnValue
+    }
+}
+
+//=========================================================================================================================================
+/*
+ MaxPoff — 05/26/2021
+ Write a function that accepts a string as input and returns how often each letter is repeated in a single run (case matters). You must take in String, and return String.
+ 
+ Example in && out:
+ in: "aabbcc"
+ out: "a2b2c2"
+ in: "aaAbbBccC"
+ out: "a2A1b2B1c2C1"
+
+ Hint:
+ String != Array
+ */
+
+//Mike Conner — 05/26/2021
+func magicBox(_ input: String) -> String {
+    var input = input
+    var output = ""
+    var character = ""
+    
+    for _ in input {
+        var counter = 0
+        if input.count != 0 {
+            character = String(input.removeFirst())
+            counter += 1
+            while String(input.prefix(1)) == character {
+                input.removeFirst()
+                counter += 1
+            }
+            output = output.appending("\(character)\(counter)")
+        }
+    }
+    return output
+}
+
+//Stan Phillips — 05/26/2021
+let string = "aaAbbBccCCCcb"
+
+func getLetterCount(for string: String) -> String {
+    var letterMap: [Character:Int] = [:]
+    var letterCount = ""
+    for char in string {
+        letterMap[char] = (letterMap[char] ?? 0) + 1
+    }
+    for key in letterMap.keys {
+        letterCount += (String(key) + String(letterMap[key]!))
+    }
+    return letterCount
+}
+
+print(getLetterCount(for: string))
+
+//MaxPoff — 06/02/2021
+func countRun(input: String) -> String {
+    var returnValue = ""
+    var letterCount = 0
+    let inputAsArray = Array(input)
+    for i in 0 ..< inputAsArray.count {
+        letterCount += 1
+        if i + 1 == inputAsArray.count || inputAsArray[i] != inputAsArray[i + 1] {
+            
+            returnValue += "\(inputAsArray[i])\(letterCount)"
+            letterCount = 0
+        }
+    }
+    return returnValue
+}
+
+/*
+ MaxPoff — 06/07/2021
+ 
+ Write a function that returns a string with each word reversed but still in the original order, WITHOUT using a loop.
+ Example in && out:
+ in: "test one two"
+ out: "tset eno owt"
+ */
+
+//Gavin "REEEEE" Craft — 06/07/2021
+func doThing(_ r: String) ->String{
+    let t = r.split(separator: " ")
+    let retty = t.map({$0.reversed()})
+    return String(retty.joined(separator: " "))
+}
+
+//Bryson Jones — 06/15/2021
+func desrever(for str: String) -> String {
+    let result = str.split(separator: " ").map { String($0.reversed())}.joined(separator: " ")
+    return result
 }

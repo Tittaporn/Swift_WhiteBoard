@@ -322,3 +322,42 @@ Swift is a general-purpose programming language built using a modern approach to
  */
 //===========================================================================================================================================================
 
+// MARK: - The iOS Application Lifecycle
+/*
+ 
+ Application Life Cycle is very important to understand for all the iOS Developers, who want to make enriched , immersive and smooth User experience.
+ - How the application starts :
+ When The User just turned on his phone, no applications are running except those that are belong to the operating system. Your Application is not running. After the User taps your app icon, Springboard the part of the OS, that operates the home screen of iOS, launches your app. Your app and the shared libraries it needs to execute, will be loaded into the memory, while springboard animates your app’s launch screen. eventually your app begins execution and application delegate receives the notifications.
+ ***Every iOS application, on the device will be transitioned to several states like***
+ - Not Running
+ - In Active
+ - Active
+ - Background and Suspended states.
+ 
+ ***At any given moment, your app fells into one of the above states.***
+ - The iOS operating system manages the application states, but the app is responsible for handling user-experience through these state transitions.
+   - Not Running — Either the application has not started yet or was running and has been terminated by the system.
+   - Inactive — An application is running in the Foreground but is not receiving any events. This could happen in case a Call or Message is received. An application could also stay in this state while in transition to a different state. In this State, we can not interact with app’s UI.
+   - Active — An application is running in the Foreground and receiving the events. This is the normal mode for the Foreground apps. The only way to go to or from the Active state is through the Inactive state. User normally interacts with UI, and can see the response/result for user actions.
+   - Background — An application is running in the background and executing the code. Freshly launching apps directly enter into In-Active state and then to Active state. Apps that are suspended, will come back to this background state, and then transition to In-Active → Active states. In addition, an application being launched directly into the background enters this state instead of the inactive state.
+   - Suspended — An application is in the background but is not executing the code. The system moves the application to this state automatically and does not notify. In case of low memory, the system may purge suspended application without notice to make free space for the foreground application. Usually after 5 secs spent in the background, apps will transition to Suspend state, but we can extend the time if app needs.
+ 
+ ***UIApplication object defines some methods which are called or will be responded to some of the above states which are most important, to let us work on those transition states regarding our app functionalities. Let us see in the following.***
+ 
+ ***As soon as application has successfully initiated launch process :***
+ - application:willFinishLaunchingWithOptions — This method is called after your application has been launched successfully. It is the first method from our app delegate , which will be called. You can execute your code if the launch was successful.
+ - application:didFinishLaunchingWithOptions — This method is called before the app’s window is displayed. You can finalise your interface and can provide the root ViewController to the window.
+ - applicationDidBecomeActive — This method is either called to let your app know that it moved from the inactive to active state or your app was launched by the user or the system or in case user ignores an interruption (such as an incoming phone call or SMS message) that sent the application temporarily to the inactive state. You should use this method to restart any tasks that were paused (or not yet started) while the app was inactive.
+ - applicationWillResignActive — This method is called to let your app know that it is about to move from active to inactive state. This can happen in case of any interruptions (such as an incoming phone call or SMS message or Calendar alerts) or when the user quits the app. You should use this method to pause any ongoing tasks or disable timers etc.
+ - applicationDidEnterBackground — This method is called to let app know that it is not running in the foreground. You have approximately five seconds to perform any tasks and return back. In case you need additional time, you can request additional execution time from the system by calling beginBackgroundTask(expirationHandler:). If the method does not return before time runs out your app is terminated and purged from memory.
+ - applicationWillEnterForeground — This method is called as a part of the transition from the background to the active state. You should use this to undo any change you made to your app upon entering the background. applicationDidBecomeActive method is called soon after this method has finished its execution which then moves the app from the inactive to the active state.
+ - applicationWillTerminate — This method is called to let you know that your app is about to terminate. You should use this method to perform any final clean-up task. You have approximately five seconds to perform any tasks and return back. If the method does not return before time expires, the system may kill the process altogether. This method may be called in situations where the app is running in the background (not suspended) and the system needs to terminate it for some reason. You shouldn’t wait applicationWillTerminate to be called in order to save your data. There are some cases when applicationWillTerminate won’t be called before app termination. For example the system will not call applicationWillTerminate when the device reboots.
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ What is AppDelegate life cycle in Swift?
+Like the UIApplication object, UIKit creates your app delegate object early in your app's launch cycle so it is always present. Use your app delegate object to handle the following tasks: Initializing your app's central data structures. Configuring your app's scenes.
+ https://hackernoon.com/application-life-cycle-in-ios-12b6ba6af78b
+ */
+//===========================================================================================================================================================
+
+
+
