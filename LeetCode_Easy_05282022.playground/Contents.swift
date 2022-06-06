@@ -364,3 +364,142 @@ print("romanToInt LVIII : \(romanToInt("LVIII"))")
 print("romanToInt MCMXCIV : \(romanToInt("MCMXCIV"))")
 print("romanToInt DCXXI : \(romanToInt("DCXXI"))")
 print("romanToInt MDLXX : \(romanToInt("MDLXX"))")
+
+// ---------------------------------------------------------------------------------------------------------------
+
+challengeOf("""
+ Write a function to find the longest common prefix string amongst an array of strings.
+
+ If there is no common prefix, return an empty string "".
+
+ Example 1:
+
+ Input: strs = ["flower","flow","flight"]
+ Output: "fl"
+ Example 2:
+
+ Input: strs = ["dog","racecar","car"]
+ Output: ""
+ Explanation: There is no common prefix among the input strings.
+""")
+
+func longestCommonPrefix(strs: [String]) -> String {
+    var longestConmmonPrefix: String = ""
+    var charArray = [[Character]]()
+    var currentIndexOfCharecter = 0
+    
+    for i in 0...strs.count - 1 {
+        var chars: [Character] = []
+        for c in strs[i] {
+            chars.append(c)
+        }
+        charArray.append(chars)
+    }
+    
+    for c in charArray[0] {
+        var cIsSame = false
+        for i in 0...charArray.count - 1 {
+            if charArray[i][currentIndexOfCharecter] == c {
+                cIsSame = true
+            } else {
+                cIsSame = false
+                continue;
+            }
+        }
+        if cIsSame {
+            longestConmmonPrefix += String(c)
+            
+            currentIndexOfCharecter += 1
+        } else {
+            break;
+        }
+    }
+    return longestConmmonPrefix
+}
+
+print("longestCommonPrefix : \(longestCommonPrefix(strs: ["flower","flow","flight"]))")
+print("longestCommonPrefix : \(longestCommonPrefix(strs: ["dog","racecar","car"]))")
+
+func longestCommonPrefix2(_ strs: [String]) -> String {
+    guard strs.count > 0 else { return "" }
+    var commonStr = strs[0]
+    for str in strs {
+        while !str.hasPrefix(commonStr) {
+            commonStr = String(commonStr.dropLast())
+        }
+    }
+    return commonStr
+}
+
+print("longestCommonPrefix2 : \(longestCommonPrefix2(["ab", "a"]))")
+
+// ---------------------------------------------------------------------------------------------------------------
+
+challengeOf("""
+ Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+ 
+ An input string is valid if:
+ 
+ Open brackets must be closed by the same type of brackets.
+ Open brackets must be closed in the correct order.
+  
+ Example 1:
+ 
+ Input: s = "()"
+ Output: true
+ Example 2:
+ 
+ Input: s = "()[]{}"
+ Output: true
+ Example 3:
+ 
+ Input: s = "(]"
+ Output: false
+ """)
+func isVaild(_ s: String) -> Bool {
+    var chars: [Character] = []
+    for c in s {
+        chars.append(c)
+    }
+    var isVaild = false
+    if chars.count % 2 == 0 {
+        let lastIndex = chars.count - 1
+        
+        for i in 0...lastIndex {
+            if i > 1 {
+                if chars[i - 1] == "(" && chars[i] == ")" {
+                    isVaild = true
+                } else if chars[i - 1] == "{" && chars[i] == "}" {
+                    isVaild = true
+                } else if chars[i - 1] == "[" && chars[i] == "]" {
+                    isVaild = true
+                } else {
+                    isVaild = false
+                }
+            } else {
+                if chars[i] == "(" && chars[i + 1] == ")" {
+                    isVaild = true
+                } else if chars[i] == "{" && chars[i + 1] == "}" {
+                    isVaild = true
+                } else if chars[i] == "[" && chars[i + 1] == "]" {
+                    isVaild = true
+                } else {
+                    isVaild = false
+                }
+            }
+        }
+        
+    } else {
+        isVaild = false
+    }
+    return isVaild
+}
+
+isVaild("(){}")
+isVaild("()")
+isVaild("()[]{}")
+isVaild("(]")
+
+// ---------------------------------------------------------------------------------------------------------------
+
+
